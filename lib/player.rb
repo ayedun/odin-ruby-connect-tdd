@@ -32,16 +32,16 @@ class Player
     end
 
 
-    def as_json(options={})
-        {
-          name: @name,
-          symbol: @symbol
-        }
-      end
-    
-      def to_json(*options)
-        as_json(*options).to_json(*options)
-      end
-
+    # def to_json
+    #   JSON.dump ({
+    #     :name => @name,
+    #     :symbol => @symbol,
+    #   })
+    # end
+  
+    # def self.from_json(string)
+    #   data = JSON.load string
+    #   self.new(data['name'], data['age'], data['gender'])
+    # end
 
 end

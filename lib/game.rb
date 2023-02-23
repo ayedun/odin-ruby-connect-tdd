@@ -2,7 +2,7 @@ require "json"
 
 #initialize Game with P1, P2, and an empty board.
 class Game
-    def initialize(player1, player2)
+    def initialize(player1 = nil, player2 = nil)
         @player1 = player1
         @player2 = player2
         @board = Array.new(7, " ") {Array.new(6, " ")}
@@ -17,21 +17,21 @@ class Game
     def turn()
         column_sel1 = -3 #random number to allow until loop to fxn
         column_sel2 = -3 #random number to allow until loop to fxn
-        until column_sel1 >= 0 && column_sel1 < 6 do
-            p "#{@player1.name}, please choose the column for your move, 0-6"
+        until column_sel1 >= 0 && column_sel1 < 6 do  #range of the grid.
+            p "#{@player1.name}, please choose the column for your move, 0-6, or you can type 'save' to save the game"
             column_sel1 = gets.chomp
-            # if column_sel1 == "save"
-            #     save_game
-            #     return
+            if column_sel1 == "save"
+                save_game
+                return
                 
-            # end
+            end
             
             column_sel1 = column_sel1.to_i
         end
         place_token(@player1, column_sel1)
 
 
-        if check_win == true
+        if check_win == true #check win conditions,
             return
         end
 
@@ -42,18 +42,18 @@ class Game
         place_token(@player2, column_sel2)
 
 
-        turn unless check_win == true
+        turn unless check_win == true #check win conditions,
 
 
         
     end
 
     def place_token(player, column)
-        bottom_most = get_bottom(column)
+        bottom_most = get_bottom(column) #get the lowest empty row.
         @board[bottom_most][column] = player.symbol
         print_board
         
-        # p get_bottom(column)
+        
     end
     def board
         @board
@@ -159,7 +159,7 @@ class Game
             column_index= column_index + 1
         end
 
-        @board.each do |row|
+        @board.each do |row| #Check if all grid elements have been used.
             if row.none?{ |unit| unit == " " }
                 p "It's a tie!"
                 return true
@@ -195,37 +195,44 @@ class Game
     
     end
 
-    # def save_game
-    #     p @player1
-    #     p @player2
-    #     Dir.mkdir("saved_games") unless Dir.exists?("saved_games")
-    #     filename =  "saved_games/saved_game.json"
-    #     File.open(filename, "w") do |f|
-    #         f.puts(convert_to_json)
-    #     end
-    #     p "Game Saved Successfully"
-    # end
+    def save_game
+        p @player1
+        p @player2
+        Dir.mkdir("saved_games") unless Dir.exists?("saved_games")
+        filename =  "saved_games/saved_game.json"
+        File.open(filename, "w") do |f|
+            f.puts(convert_to_json)
+        end
+        p "Game Saved Successfully"
+    end
 
-    # def convert_to_json
-    #     JSON.dump({
-    #         player1: @player1.to_json,
-    #         player2: @player2,
-    #         board: @board
-    #     })
-    # end
+    def convert_to_json
+        JSON.dump({
+            player1: player_as_json(@player1),
+            player2: player_as_json(@player2),
+            board: @board
+        })
+    end
 
-    # def load_game
-    #     filename = "saved_games/saved_game.json"
-    #     File.open(filename, "r") do |f|
-    #         from_json(f)
-    #     end
-    # end
+    def player_as_json(player)
+        { name: player.name, symbol: player.symbol }
+      end
 
-    # def from_json(file)
-    #     json_file = JSON.parse(File.read(file))
-    #     @player1 = json_file["player1"]
-    #     @player2 = json_file["player2"]
-    #     @board = json_file["board"]
-    #     puts "Save was loaded successfuly"
-    # end
+
+
+    def load_game
+        filename = "saved_games/saved_game.json"
+        File.open(filename, "r") do |f|
+            from_json(f)
+        end
+    end
+
+    def from_json(file)
+        json_file = JSON.parse(File.read(file))
+        @player1 = Player.new(json_file['player1']['name'], json_file['player1']['symbol'])
+        @player2 = Player.new(json_file['player2']['name'], json_file['player2']['symbol'])
+
+        @board = json_file["board"]
+        puts "Save was loaded successfuly"
+    end
 end

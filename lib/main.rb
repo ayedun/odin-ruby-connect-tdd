@@ -16,29 +16,30 @@ end
 
 
 
-# decision = nil
-# until decision == 'new' || decision =='load' do
-#     puts "Please type 'new' to start a new game, or 'load' to load an old game"
-#     decision = gets.chomp
-# end
-# if decision == 'new'
-    
+decision = nil
+until decision == 'new' || decision =='load' do
+    puts "Please type 'new' to start a new game, or 'load' to load an old game"
+    decision = gets.chomp
+end
+if decision == 'new'
 
-#     game.turn
+    player1 =get_player_name_and_symbol()
+    player2 =get_player_name_and_symbol(2)
+    game = Game.new(player1, player2)
+    p "Let the game commence!"
+        
 
-# elsif decision == 'load'
-#     game = Game.new(player1, player2)
-#     game.load_game
-#     p "Let the game commence!"
+    game.turn
 
-#     game.turn
-# end
+elsif decision == 'load'
+    game = Game.new()
+    game.load_game
+    p "Let the game commence!"
 
-player1 =get_player_name_and_symbol()
-player2 =get_player_name_and_symbol(2)
-game = Game.new(player1, player2)
-p "Let the game commence!"
-game.turn
+    game.turn
+end
+
+# game.turn
 
 
 
