@@ -1,3 +1,4 @@
+require "json"
 class Game
     def initialize(player1, player2)
         @player1 = player1
@@ -5,12 +6,51 @@ class Game
         @board = Array.new(7, " ") {Array.new(6, " ")}
         @winner = nil
         #@current_player = @player1
+        @board_label = ['0', '1', '2', '3', '4', '5']
+    end
+
+    
+
+
+    def turn()
+        column_sel1 = -3 #random number to allow until loop to fxn
+        column_sel2 = -3
+        until column_sel1 >= 0 && column_sel1 < 6 do
+            p "#{@player1.name}, please choose the column for your move, 0-6"
+            column_sel1 = gets.chomp
+            # if column_sel1 == "save"
+            #     save_game
+            #     return
+                
+            # end
+            
+            column_sel1 = column_sel1.to_i
+        end
+        place_token(@player1, column_sel1)
+
+
+        if check_win == true
+            return
+        end
+
+        until column_sel2 >= 0 && column_sel2 < 6 do
+            p "#{@player2.name}, please choose the column for your move, 0-6"
+            column_sel2 = gets.chomp.to_i
+        end
+        place_token(@player2, column_sel2)
+
+
+        turn unless check_win == true
+
+
+        
     end
 
     def place_token(player, column)
         bottom_most = get_bottom(column)
         @board[bottom_most][column] = player.symbol
-        check_win
+        print_board
+        
         # p get_bottom(column)
     end
     def board
@@ -117,6 +157,16 @@ class Game
             column_index= column_index + 1
         end
 
+        @board.each do |row|
+            if row.none?{ |unit| unit == " " }
+                p "It's a tie!"
+                return true
+            end
+        end
+
+
+
+
         
 
 
@@ -126,7 +176,7 @@ class Game
 
     def select_winner(player)
         @winner = player
-        "Congrats #{player.name}. You won!}"
+        p "Congrats #{player.name}. You won!}"
     end
 
     def return_winner
@@ -135,9 +185,45 @@ class Game
 
 
     def print_board
+        print "#{@board_label}, These are the column labels \n"
+        print "\n"
         @board.reverse.each do |row|
             p row
         end
     
     end
+
+    # def save_game
+    #     p @player1
+    #     p @player2
+    #     Dir.mkdir("saved_games") unless Dir.exists?("saved_games")
+    #     filename =  "saved_games/saved_game.json"
+    #     File.open(filename, "w") do |f|
+    #         f.puts(convert_to_json)
+    #     end
+    #     p "Game Saved Successfully"
+    # end
+
+    # def convert_to_json
+    #     JSON.dump({
+    #         player1: @player1.to_json,
+    #         player2: @player2,
+    #         board: @board
+    #     })
+    # end
+
+    # def load_game
+    #     filename = "saved_games/saved_game.json"
+    #     File.open(filename, "r") do |f|
+    #         from_json(f)
+    #     end
+    # end
+
+    # def from_json(file)
+    #     json_file = JSON.parse(File.read(file))
+    #     @player1 = json_file["player1"]
+    #     @player2 = json_file["player2"]
+    #     @board = json_file["board"]
+    #     puts "Save was loaded successfuly"
+    # end
 end
