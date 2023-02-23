@@ -1,4 +1,6 @@
 require "json"
+
+#initialize Game with P1, P2, and an empty board.
 class Game
     def initialize(player1, player2)
         @player1 = player1
@@ -14,7 +16,7 @@ class Game
 
     def turn()
         column_sel1 = -3 #random number to allow until loop to fxn
-        column_sel2 = -3
+        column_sel2 = -3 #random number to allow until loop to fxn
         until column_sel1 >= 0 && column_sel1 < 6 do
             p "#{@player1.name}, please choose the column for your move, 0-6"
             column_sel1 = gets.chomp
